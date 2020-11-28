@@ -5,12 +5,8 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>fa-plus-circle</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>fa-sign-out-alt</v-icon>
+      <v-btn link nuxt to="/form" icon>
+        <v-icon title="作成する">fa-plus-circle</v-icon>
       </v-btn>
     </v-app-bar>
 

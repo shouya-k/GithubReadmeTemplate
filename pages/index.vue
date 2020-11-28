@@ -1,9 +1,14 @@
 <template>
-  <v-app>
-    <v-alert type="info" border="left" color="blue">Hello World</v-alert>
-  </v-app>
+  <div>
+    <Card></Card>
+  </div>
 </template>
 
 <script>
-export default {}
+import Card from '~/components/content'
+export default {
+  components: {
+    Card,
+  },
+}
 </script>
