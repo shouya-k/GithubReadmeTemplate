@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Card from '~/components/content'
+import Card from '~/components/contents/content'
 export default {
   components: {
     Card,

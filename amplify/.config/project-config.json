@@ -1,0 +1,17 @@
+{
+  "projectName": "nuxtmyapp01",
+  "version": "3.0",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "vue",
+    "config": {
+      "SourceDir": ".",
+      "DistributionDir": "dist",
+      "BuildCommand": "yarn run build",
+      "StartCommand": "yarn run start"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
+}

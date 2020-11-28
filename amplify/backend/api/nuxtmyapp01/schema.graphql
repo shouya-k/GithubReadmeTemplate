@@ -1,0 +1,22 @@
+type Readme @model {
+  id: ID!
+  name: String!
+  overview: String
+  img1: String
+  img2: String
+  img3: String
+  url: String
+  buildSetup1: String
+  buildSetup2: String
+  buildSetup3: String
+  buildSetup4: String
+  buildSetup5: String
+  buildSetup6: String
+  technology1: String
+  technology2: String
+  technology3: String
+  technology4: String
+  technology5: String
+  technology6: String
+  author: String
+}

@@ -1,17 +1,14 @@
 <template>
   <div>
-    <Sidebar></Sidebar>
     <Form></Form>
   </div>
 </template>
 
 <script>
-import Form from '~/components/readme-form'
-import Sidebar from '~/components/form-sidebar'
+import Form from '~/components/contents/readme-form'
 export default {
   components: {
     Form,
-    Sidebar,
   },
 }
 </script>
