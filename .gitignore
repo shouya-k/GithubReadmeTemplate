@@ -68,6 +68,9 @@ typings/
 # nuxt.js build output
 .nuxt
 
+# vscode output
+.vscode
+
 # Nuxt generate
 dist
 

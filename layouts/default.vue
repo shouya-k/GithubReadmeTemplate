@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar dark app>
-      <v-toolbar-title>Github README Template</v-toolbar-title>
+      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')"
+        >Github README Template</v-toolbar-title
+      >
 
       <v-spacer></v-spacer>
 
