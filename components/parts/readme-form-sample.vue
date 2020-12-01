@@ -18,21 +18,24 @@
           readonly
         ></v-text-field>
         <div class="form__images">
-          <v-file-input
-            accept="image/*"
+          <v-text-field
+            v-model="form.img1"
             label="スクショ画像 1"
-            disabled
-          ></v-file-input>
-          <v-file-input
-            accept="image/*"
+            prepend-icon="fa-paperclip"
+            readonly
+          ></v-text-field>
+          <v-text-field
+            v-model="form.img2"
             label="スクショ画像 2"
-            disabled
-          ></v-file-input>
-          <v-file-input
-            accept="image/*"
+            prepend-icon="fa-paperclip"
+            readonly
+          ></v-text-field>
+          <v-text-field
+            v-model="form.img3"
             label="スクショ画像 3"
-            disabled
-          ></v-file-input>
+            prepend-icon="fa-paperclip"
+            readonly
+          ></v-text-field>
         </div>
         <v-text-field
           v-model="form.url"
@@ -98,9 +101,12 @@ export default {
         name: 'Github README Template',
         overview:
           'GithubのREADMEを作成するサイトです。入力フォームの内容を入力する事でマークダウンされたコードを作成できます。',
-        img1: null,
-        img2: null,
-        img3: null,
+        img1:
+          'https://user-images.githubusercontent.com/65233189/100745066-132a3e00-3422-11eb-8882-5149dc678a6b.png"',
+        img2:
+          'https://user-images.githubusercontent.com/65233189/100745118-25a47780-3422-11eb-9123-542f76ea5316.png',
+        img3:
+          'https://user-images.githubusercontent.com/65233189/100745155-35bc5700-3422-11eb-899d-b85d19572974.png',
         url: 'http://localhost:3000/form',
         buildSetup1:
           'git clone https://github.com/shouya-k/nuxt-amplify-webapp.git',

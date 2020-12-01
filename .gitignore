@@ -69,7 +69,7 @@ typings/
 .nuxt
 
 # vscode output
-.vscode
+.vscode/
 
 # Nuxt generate
 dist

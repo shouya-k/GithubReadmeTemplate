@@ -5,33 +5,35 @@
       <v-text-field
         v-model="form.name"
         label="プロジェクト名前 / Project Title"
-        required
+        :rules="[required]"
       ></v-text-field>
       <v-text-field
         v-model="form.overview"
         label="プロジェクトの概要 / Overview"
-        required
+        :rules="[required]"
       ></v-text-field>
       <div class="form__images">
-        <v-file-input
-          accept="image/*"
+        <v-text-field
+          v-model="form.img1"
           label="スクショ画像 1"
-          @change="onImagePicked1"
-        ></v-file-input>
-        <v-file-input
-          accept="image/*"
+          prepend-icon="fa-paperclip"
+          :rules="[required]"
+        ></v-text-field>
+        <v-text-field
+          v-model="form.img2"
           label="スクショ画像 2"
-          @change="onImagePicked2"
-        ></v-file-input>
-        <v-file-input
-          accept="image/*"
+          prepend-icon="fa-paperclip"
+        ></v-text-field>
+        <v-text-field
+          v-model="form.img3"
           label="スクショ画像 3"
-          @change="onImagePicked3"
-        ></v-file-input>
+          prepend-icon="fa-paperclip"
+        ></v-text-field>
       </div>
       <v-text-field
         v-model="form.url"
         label="リリースURL / Demo URL"
+        :rules="[required]"
       ></v-text-field>
 
       <v-card class="card">
@@ -107,7 +109,7 @@
       <v-text-field
         v-model="form.author"
         label="著者 / Author"
-        required
+        :rules="[required]"
       ></v-text-field>
       <v-btn class="form__btn" color="primary" @click="createReadme"
         >作成する</v-btn
@@ -119,16 +121,15 @@
 <script>
 import { API } from 'aws-amplify'
 import { createReadme } from '~/graphql/mutations'
-
 export default {
   data() {
     return {
       form: {
         name: '',
         overview: '',
-        img1: null,
-        img2: null,
-        img3: null,
+        img1: '',
+        img2: '',
+        img3: '',
         url: '',
         buildSetup1: '',
         buildSetup2: '',
@@ -143,6 +144,7 @@ export default {
         technology5: '',
         technology6: '',
         author: '',
+        modal: false,
       },
       buildField1: false,
       buildField2: false,
@@ -154,65 +156,70 @@ export default {
       technologyField3: false,
       technologyField4: false,
       technologyField5: false,
+      required: (value) => !!value || '必ず入力してください',
     }
   },
   methods: {
     async createReadme() {
-      const {
-        name,
-        overview,
-        img1,
-        img2,
-        img3,
-        url,
-        buildSetup1,
-        buildSetup2,
-        buildSetup3,
-        buildSetup4,
-        buildSetup5,
-        buildSetup6,
-        technology1,
-        technology2,
-        technology3,
-        technology4,
-        technology5,
-        technology6,
-        author,
-      } = this.form
+      if (this.$refs.form.validate()) {
+        const {
+          name,
+          overview,
+          img1,
+          img2,
+          img3,
+          url,
+          buildSetup1,
+          buildSetup2,
+          buildSetup3,
+          buildSetup4,
+          buildSetup5,
+          buildSetup6,
+          technology1,
+          technology2,
+          technology3,
+          technology4,
+          technology5,
+          technology6,
+          author,
+          modal,
+        } = this.form
 
-      const form = {
-        name,
-        overview,
-        img1,
-        img2,
-        img3,
-        url,
-        buildSetup1,
-        buildSetup2,
-        buildSetup3,
-        buildSetup4,
-        buildSetup5,
-        buildSetup6,
-        technology1,
-        technology2,
-        technology3,
-        technology4,
-        technology5,
-        technology6,
-        author,
+        const form = {
+          name,
+          overview,
+          img1,
+          img2,
+          img3,
+          url,
+          buildSetup1,
+          buildSetup2,
+          buildSetup3,
+          buildSetup4,
+          buildSetup5,
+          buildSetup6,
+          technology1,
+          technology2,
+          technology3,
+          technology4,
+          technology5,
+          technology6,
+          author,
+          modal,
+        }
+        await API.graphql({
+          query: createReadme,
+          variables: {
+            input: form,
+          },
+        })
+          .then((data) => {
+            this.$router.push('/')
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
-      await API.graphql({
-        query: createReadme,
-        variables: {
-          input: form,
-        },
-      })
-        .then((data) => {
-          console.log(data)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
     },
     addBuildField() {
       if (this.buildField1 === false) {
@@ -240,48 +247,20 @@ export default {
         this.technologyField5 = true
       }
     },
-    onImagePicked1(file) {
-      if (file !== undefined && file !== null) {
-        if (file.name.lastIndexOf('.') <= 0) {
-          return
-        }
-        const fr = new FileReader()
-        fr.readAsDataURL(file)
-        fr.addEventListener('load', () => {
-          this.form.img1 = fr.result
-        })
-      } else {
-        this.form.img1 = ''
-      }
-    },
-    onImagePicked2(file) {
-      if (file !== undefined && file !== null) {
-        if (file.name.lastIndexOf('.') <= 0) {
-          return
-        }
-        const fr = new FileReader()
-        fr.readAsDataURL(file)
-        fr.addEventListener('load', () => {
-          this.form.img2 = fr.result
-        })
-      } else {
-        this.form.img2 = ''
-      }
-    },
-    onImagePicked3(file) {
-      if (file !== undefined && file !== null) {
-        if (file.name.lastIndexOf('.') <= 0) {
-          return
-        }
-        const fr = new FileReader()
-        fr.readAsDataURL(file)
-        fr.addEventListener('load', () => {
-          this.form.img3 = fr.result
-        })
-      } else {
-        this.form.img3 = ''
-      }
-    },
+    // onImagePicked1(file) {
+    //   if (file !== undefined && file !== null) {
+    //     if (file.name.lastIndexOf('.') <= 0) {
+    //       return
+    //     }
+    //     const fr = new FileReader()
+    //     fr.readAsDataURL(file)
+    //     fr.addEventListener('load', () => {
+    //       this.form.img1 = fr.result
+    //     })
+    //   } else {
+    //     this.form.img1 = ''
+    //   }
+    // },
   },
 }
 </script>
@@ -290,7 +269,7 @@ export default {
 .form {
   width: 70%;
   padding: 20px 30px;
-  margin-top: 10px;
+  margin-top: 20px;
 
   &__title {
     text-align: center;
