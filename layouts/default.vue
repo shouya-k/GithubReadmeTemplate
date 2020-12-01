@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="bgc">
     <v-app-bar dark app>
       <v-toolbar-title style="cursor: pointer" @click="$router.push('/')"
         >Github README Template</v-toolbar-title
@@ -22,4 +22,8 @@
 export default {}
 </script>
 
-<style scoped></style>
+<style scoped>
+.bgc {
+  background-color: #f2f2f2;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="form">
+  <v-card class="form">
     <h1 class="form__title">README Template 作成</h1>
     <v-form ref="form">
       <v-text-field
@@ -113,7 +113,7 @@
         >作成する</v-btn
       >
     </v-form>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -288,8 +288,9 @@ export default {
 
 <style lang="scss" scoped>
 .form {
-  width: 60%;
-  margin: 0;
+  width: 70%;
+  padding: 20px 30px;
+  margin-top: 10px;
 
   &__title {
     text-align: center;
