@@ -19,4 +19,5 @@ type Readme @model {
   technology5: String
   technology6: String
   author: String
+  modal: Boolean
 }

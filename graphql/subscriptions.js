@@ -24,6 +24,7 @@ export const onCreateReadme = /* GraphQL */ `
       technology5
       technology6
       author
+      modal
       createdAt
       updatedAt
     }
@@ -52,6 +53,7 @@ export const onUpdateReadme = /* GraphQL */ `
       technology5
       technology6
       author
+      modal
       createdAt
       updatedAt
     }
@@ -80,6 +82,7 @@ export const onDeleteReadme = /* GraphQL */ `
       technology5
       technology6
       author
+      modal
       createdAt
       updatedAt
     }

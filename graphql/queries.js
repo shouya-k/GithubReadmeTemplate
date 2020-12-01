@@ -24,6 +24,7 @@ export const getReadme = /* GraphQL */ `
       technology5
       technology6
       author
+      modal
       createdAt
       updatedAt
     }
@@ -57,6 +58,7 @@ export const listReadmes = /* GraphQL */ `
         technology5
         technology6
         author
+        modal
         createdAt
         updatedAt
       }
