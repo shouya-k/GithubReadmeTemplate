@@ -1,20 +1,35 @@
-# nuxt-amplify-webapp
+# Github README Template
 
-## Build Setup
+## プロジェクト概要 / Overview
 
-```bash
-# install dependencies
+Github の README を作成するサイトです。入力フォームの内容を入力する事でマークダウンされたコードを作成できます。
+<img src="https://user-images.githubusercontent.com/65233189/100769465-6a8ad700-343f-11eb-8a00-b5631b7532f9.png" alt="attach:cat" title="attach:cat" width="800">
+<img src="https://user-images.githubusercontent.com/65233189/100769497-79718980-343f-11eb-813e-53709cc3c669.png" alt="attach:cat" title="attach:cat" width="800">
+<img src="https://user-images.githubusercontent.com/65233189/100771553-e2f29780-3441-11eb-8497-32a1630ec1b1.png" alt="attach:cat" title="attach:cat" width="800">
+
+## リリース URL / Demo URL
+
+https://dev.d1nqlyqhms5obl.amplifyapp.com/
+
+## ローカル実行方法 / Build Setup
+
+```
+$ git clone https://github.com/shouya-k/nuxt-amplify-webapp.git
+
 $ yarn install
 
-# serve with hot reload at localhost:3000
 $ yarn dev
 
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## 使用技術 / Technology
+
+- Nuxt.js
+
+- Vuetify
+
+- AWS Amplify
+
+## 著者 / Author
+
+shouya.kousuge
