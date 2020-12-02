@@ -13,6 +13,7 @@
   "dependencies": {
     "@aws-amplify/ui-vue": "^0.2.29",
     "@nuxtjs/axios": "^5.12.2",
+    "@nuxtjs/composition-api": "^0.16.4",
     "aws-amplify": "^3.3.10",
     "core-js": "^3.6.5",
     "node-sass": "^5.0.0",

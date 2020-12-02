@@ -1,7 +1,7 @@
 <template>
   <v-card class="form">
     <h1 class="form__title">README Template 作成</h1>
-    <v-form ref="form">
+    <v-form ref="formRules">
       <v-text-field
         v-model="form.name"
         label="プロジェクト名前 / Project Title"
@@ -45,27 +45,27 @@
           @click:append="addBuildField"
         ></v-text-field>
         <v-text-field
-          v-if="buildField1"
+          v-if="build1"
           v-model="form.buildSetup2"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="buildField2"
+          v-if="build2"
           v-model="form.buildSetup3"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="buildField3"
+          v-if="build3"
           v-model="form.buildSetup4"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="buildField4"
+          v-if="build4"
           v-model="form.buildSetup5"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="buildField5"
+          v-if="build5"
           v-model="form.buildSetup6"
           class="card__field"
         ></v-text-field>
@@ -80,27 +80,27 @@
           @click:append="addTechnologyField"
         ></v-text-field>
         <v-text-field
-          v-if="technologyField1"
+          v-if="technology1"
           v-model="form.technology2"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="technologyField2"
+          v-if="technology2"
           v-model="form.technology3"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="technologyField3"
+          v-if="technology3"
           v-model="form.technology4"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="technologyField4"
+          v-if="technology4"
           v-model="form.technology5"
           class="card__field"
         ></v-text-field>
         <v-text-field
-          v-if="technologyField5"
+          v-if="technology5"
           v-model="form.technology6"
           class="card__field"
         ></v-text-field>
@@ -111,7 +111,7 @@
         label="著者 / Author"
         :rules="[required]"
       ></v-text-field>
-      <v-btn class="form__btn" color="primary" @click="createReadme"
+      <v-btn class="form__btn" color="primary" @click="createdReadme"
         >作成する</v-btn
       >
     </v-form>
@@ -119,148 +119,104 @@
 </template>
 
 <script>
+import { reactive, ref, toRefs } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
 import { createReadme } from '~/graphql/mutations'
 export default {
-  data() {
-    return {
-      form: {
-        name: '',
-        overview: '',
-        img1: '',
-        img2: '',
-        img3: '',
-        url: '',
-        buildSetup1: '',
-        buildSetup2: '',
-        buildSetup3: '',
-        buildSetup4: '',
-        buildSetup5: '',
-        buildSetup6: '',
-        technology1: '',
-        technology2: '',
-        technology3: '',
-        technology4: '',
-        technology5: '',
-        technology6: '',
-        author: '',
-        modal: false,
-      },
-      buildField1: false,
-      buildField2: false,
-      buildField3: false,
-      buildField4: false,
-      buildField5: false,
-      technologyField1: false,
-      technologyField2: false,
-      technologyField3: false,
-      technologyField4: false,
-      technologyField5: false,
-      required: (value) => !!value || '必ず入力してください',
-    }
-  },
-  methods: {
-    async createReadme() {
-      if (this.$refs.form.validate()) {
-        const {
-          name,
-          overview,
-          img1,
-          img2,
-          img3,
-          url,
-          buildSetup1,
-          buildSetup2,
-          buildSetup3,
-          buildSetup4,
-          buildSetup5,
-          buildSetup6,
-          technology1,
-          technology2,
-          technology3,
-          technology4,
-          technology5,
-          technology6,
-          author,
-          modal,
-        } = this.form
+  setup(props, context) {
+    const router = context.root.$router
 
-        const form = {
-          name,
-          overview,
-          img1,
-          img2,
-          img3,
-          url,
-          buildSetup1,
-          buildSetup2,
-          buildSetup3,
-          buildSetup4,
-          buildSetup5,
-          buildSetup6,
-          technology1,
-          technology2,
-          technology3,
-          technology4,
-          technology5,
-          technology6,
-          author,
-          modal,
+    const form = reactive({
+      name: '',
+      overview: '',
+      img1: '',
+      img2: '',
+      img3: '',
+      url: '',
+      buildSetup1: '',
+      buildSetup2: '',
+      buildSetup3: '',
+      buildSetup4: '',
+      buildSetup5: '',
+      buildSetup6: '',
+      technology1: '',
+      technology2: '',
+      technology3: '',
+      technology4: '',
+      technology5: '',
+      technology6: '',
+      author: '',
+      modal: false,
+    })
+
+    const formRules = ref(null)
+    const required = ref((value) => !!value || '必ず入力してください。')
+
+    const createdReadme = async () => {
+      if (formRules.value.validate()) {
+        try {
+          await API.graphql({
+            query: createReadme,
+            variables: {
+              input: form,
+            },
+          })
+          router.push('/')
+        } catch (error) {
+          console.log(error)
         }
-        await API.graphql({
-          query: createReadme,
-          variables: {
-            input: form,
-          },
-        })
-          .then((data) => {
-            this.$router.push('/')
-          })
-          .catch((error) => {
-            console.log(error)
-          })
       }
-    },
-    addBuildField() {
-      if (this.buildField1 === false) {
-        this.buildField1 = true
-      } else if (this.buildField2 === false) {
-        this.buildField2 = true
-      } else if (this.buildField3 === false) {
-        this.buildField3 = true
-      } else if (this.buildField4 === false) {
-        this.buildField4 = true
-      } else if (this.buildField5 === false) {
-        this.buildField5 = true
+    }
+
+    const field = reactive({
+      build1: false,
+      build2: false,
+      build3: false,
+      build4: false,
+      build5: false,
+      technology1: false,
+      technology2: false,
+      technology3: false,
+      technology4: false,
+      technology5: false,
+    })
+
+    const addBuildField = () => {
+      if (field.build1 === false) {
+        field.build1 = true
+      } else if (field.build2 === false) {
+        field.build2 = true
+      } else if (field.build3 === false) {
+        field.build3 = true
+      } else if (field.build4 === false) {
+        field.build4 = true
+      } else if (field.build5 === false) {
+        field.build5 = true
       }
-    },
-    addTechnologyField() {
-      if (this.technologyField1 === false) {
-        this.technologyField1 = true
-      } else if (this.technologyField2 === false) {
-        this.technologyField2 = true
-      } else if (this.technologyField3 === false) {
-        this.technologyField3 = true
-      } else if (this.technologyField4 === false) {
-        this.technologyField4 = true
-      } else if (this.technologyField5 === false) {
-        this.technologyField5 = true
+    }
+    const addTechnologyField = () => {
+      if (field.technology1 === false) {
+        field.technology1 = true
+      } else if (field.technology2 === false) {
+        field.technology2 = true
+      } else if (field.technology3 === false) {
+        field.technology3 = true
+      } else if (field.technology4 === false) {
+        field.technology4 = true
+      } else if (field.technology5 === false) {
+        field.technology5 = true
       }
-    },
-    // onImagePicked1(file) {
-    //   if (file !== undefined && file !== null) {
-    //     if (file.name.lastIndexOf('.') <= 0) {
-    //       return
-    //     }
-    //     const fr = new FileReader()
-    //     fr.readAsDataURL(file)
-    //     fr.addEventListener('load', () => {
-    //       this.form.img1 = fr.result
-    //     })
-    //   } else {
-    //     this.form.img1 = ''
-    //   }
-    // },
+    }
+
+    return {
+      form,
+      formRules,
+      required,
+      createdReadme,
+      ...toRefs(field),
+      addBuildField,
+      addTechnologyField,
+    }
   },
 }
 </script>
