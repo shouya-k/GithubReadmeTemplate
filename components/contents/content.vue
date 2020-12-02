@@ -82,34 +82,37 @@
 </template>
 
 <script>
+import { ref } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
 import { listReadmes } from '~/graphql/queries'
 export default {
-  data() {
-    return {
-      readmes: [],
-    }
-  },
-  async created() {
-    await this.getReadmes()
-  },
-  methods: {
-    showModal(readme) {
-      readme.modal = true
-    },
-    hiddenModal(readme) {
-      readme.modal = false
-    },
-    image(img) {
-      const url = img
-      return `<img src="${url}" alt="attach:cat" title="attach:cat" width="800">`
-    },
-    async getReadmes() {
-      const readmes = await API.graphql({
+  setup() {
+    const readmes = ref([])
+
+    const getReadmes = async () => {
+      const readme = await API.graphql({
         query: listReadmes,
       })
-      this.readmes = readmes.data.listReadmes.items
-    },
+      readmes.value = readme.data.listReadmes.items
+    }
+    getReadmes()
+
+    const showModal = (readme) => {
+      readme.modal = true
+    }
+    const hiddenModal = (readme) => {
+      readme.modal = false
+    }
+    const image = (img) => {
+      return `<img src="${img}" alt="attach:cat" title="attach:cat" width="800">`
+    }
+
+    return {
+      readmes,
+      showModal,
+      hiddenModal,
+      image,
+    }
   },
 }
 </script>

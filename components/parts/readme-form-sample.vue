@@ -93,36 +93,42 @@
 </template>
 
 <script>
+import { reactive, ref } from '@nuxtjs/composition-api'
 export default {
-  data() {
-    return {
-      sample: false,
-      form: {
-        name: 'Github README Template',
-        overview:
-          'GithubのREADMEを作成するサイトです。入力フォームの内容を入力する事でマークダウンされたコードを作成できます。',
-        img1:
-          'https://user-images.githubusercontent.com/65233189/100745066-132a3e00-3422-11eb-8882-5149dc678a6b.png"',
-        img2:
-          'https://user-images.githubusercontent.com/65233189/100745118-25a47780-3422-11eb-9123-542f76ea5316.png',
-        img3:
-          'https://user-images.githubusercontent.com/65233189/100745155-35bc5700-3422-11eb-899d-b85d19572974.png',
-        url: 'http://localhost:3000/form',
-        buildSetup1:
-          'git clone https://github.com/shouya-k/nuxt-amplify-webapp.git',
-        buildSetup2: 'yarn install',
-        buildSetup3: 'yarn dev',
-        technology1: 'Nuxt.js',
-        technology2: 'Vuetify',
-        technology3: 'AWS Amplify',
-        author: 'shouya.kousuge',
-      },
+  setup() {
+    const form = reactive({
+      name: 'Github README Template',
+      overview:
+        'GithubのREADMEを作成するサイトです。入力フォームの内容を入力する事でマークダウンされたコードを作成できます。',
+      img1:
+        'https://user-images.githubusercontent.com/65233189/100745066-132a3e00-3422-11eb-8882-5149dc678a6b.png"',
+      img2:
+        'https://user-images.githubusercontent.com/65233189/100745118-25a47780-3422-11eb-9123-542f76ea5316.png',
+      img3:
+        'https://user-images.githubusercontent.com/65233189/100745155-35bc5700-3422-11eb-899d-b85d19572974.png',
+      url: 'https://dev.d1nqlyqhms5obl.amplifyapp.com/',
+      buildSetup1:
+        'git clone https://github.com/shouya-k/nuxt-amplify-webapp.git',
+      buildSetup2: 'yarn install',
+      buildSetup3: 'yarn dev',
+      technology1: 'Nuxt.js',
+      technology2: 'Vuetify',
+      technology3: 'AWS Amplify',
+      author: 'shouya.kousuge',
+    })
+
+    const sample = ref(false)
+
+    // setup内でrefを扱う際はvalueの付け忘れに注意
+    const toggleSample = () => {
+      sample.value = !sample.value
     }
-  },
-  methods: {
-    toggleSample() {
-      this.sample = !this.sample
-    },
+
+    return {
+      form,
+      sample,
+      toggleSample,
+    }
   },
 }
 </script>
