@@ -2,10 +2,35 @@
   <div>
     <div v-for="readme in readmes" :key="readme.id">
       <v-card class="card">
-        <v-card-title
+        <v-card-title class="card__title"
           ><v-btn :href="readme.url" icon><v-icon>fa-link</v-icon></v-btn
-          >{{ readme.name }}</v-card-title
-        >
+          >{{ readme.name }}
+          <v-menu transition="slide-y-transition">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn class="card__title--btn" icon v-bind="attrs" v-on="on"
+                ><v-icon>fa-ellipsis-v</v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+              <!-- <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon dense left>fa-pen</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="subtitle-1">Update</v-list-item-title>
+              </v-list-item> -->
+              <v-list-item link>
+                <v-list-item-icon>
+                  <v-icon dense left>fa-trash</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title
+                  class="subtitle-1"
+                  @click="deleteReadmes(readme)"
+                  >Delete</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-card-title>
         <v-layout>
           <v-card-text>{{
             '作成日: ' + readme.createdAt.replace('T', ' ').slice(0, 19)
@@ -85,6 +110,7 @@
 import { ref } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
 import { listReadmes } from '~/graphql/queries'
+import { deleteReadme } from '~/graphql/mutations'
 export default {
   setup() {
     const readmes = ref([])
@@ -96,6 +122,22 @@ export default {
       readmes.value = readme.data.listReadmes.items
     }
     getReadmes()
+
+    const deleteReadmes = async (readme) => {
+      try {
+        await API.graphql({
+          query: deleteReadme,
+          variables: {
+            input: {
+              id: readme.id,
+            },
+          },
+        })
+        getReadmes()
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     const showModal = (readme) => {
       readme.modal = true
@@ -112,6 +154,7 @@ export default {
       showModal,
       hiddenModal,
       image,
+      deleteReadmes,
     }
   },
 }
@@ -122,6 +165,14 @@ export default {
   width: 30%;
   padding: 10px;
   margin: 40px auto;
+
+  &__title {
+    margin-bottom: 20px;
+  }
+
+  &__title--btn {
+    margin-left: auto;
+  }
 
   &__btn {
     display: block;
