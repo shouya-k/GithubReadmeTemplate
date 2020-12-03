@@ -28,6 +28,8 @@ $ yarn dev
 
 - Vuetify
 
+- Composition API
+
 - AWS Amplify
 
 ## 著者 / Author
