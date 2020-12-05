@@ -118,11 +118,11 @@
   </v-card>
 </template>
 
-<script>
-import { reactive, ref, toRefs } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { reactive, ref, toRefs, defineComponent } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
-import { createReadme } from '~/graphql/mutations'
-export default {
+import { createReadme } from '../../graphql/mutations'
+export default defineComponent({
   setup(props, context) {
     const router = context.root.$router
 
@@ -218,7 +218,7 @@ export default {
       addTechnologyField,
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

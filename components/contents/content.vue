@@ -106,24 +106,24 @@
   </div>
 </template>
 
-<script>
-import { ref } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { ref, defineComponent } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
-import { listReadmes } from '~/graphql/queries'
-import { deleteReadme } from '~/graphql/mutations'
-export default {
+import { listReadmes } from '../../graphql/queries'
+import { deleteReadme } from '../../graphql/mutations'
+export default defineComponent({
   setup() {
     const readmes = ref([])
 
     const getReadmes = async () => {
-      const readme = await API.graphql({
+      const readme: any = await API.graphql({
         query: listReadmes,
       })
       readmes.value = readme.data.listReadmes.items
     }
     getReadmes()
 
-    const deleteReadmes = async (readme) => {
+    const deleteReadmes = async (readme: { id: string }) => {
       try {
         await API.graphql({
           query: deleteReadme,
@@ -139,13 +139,11 @@ export default {
       }
     }
 
-    const showModal = (readme) => {
-      readme.modal = true
-    }
-    const hiddenModal = (readme) => {
-      readme.modal = false
-    }
-    const image = (img) => {
+    const showModal = (readme: { modal: boolean }) => (readme.modal = true)
+
+    const hiddenModal = (readme: { modal: boolean }) => (readme.modal = false)
+
+    const image = (img: string) => {
       return `<img src="${img}" alt="attach:cat" title="attach:cat" width="800">`
     }
 
@@ -157,7 +155,7 @@ export default {
       deleteReadmes,
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
