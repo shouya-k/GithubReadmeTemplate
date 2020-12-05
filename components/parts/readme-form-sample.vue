@@ -92,9 +92,9 @@
   </div>
 </template>
 
-<script>
-import { reactive, ref } from '@nuxtjs/composition-api'
-export default {
+<script lang="ts">
+import { reactive, ref, defineComponent } from '@nuxtjs/composition-api'
+export default defineComponent({
   setup() {
     const form = reactive({
       name: 'Github README Template',
@@ -117,12 +117,9 @@ export default {
       author: 'shouya.kousuge',
     })
 
-    const sample = ref(false)
+    const sample = ref<boolean>(false)
 
-    // setup内でrefを扱う際はvalueの付け忘れに注意
-    const toggleSample = () => {
-      sample.value = !sample.value
-    }
+    const toggleSample = () => (sample.value = !sample.value)
 
     return {
       form,
@@ -130,7 +127,7 @@ export default {
       toggleSample,
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

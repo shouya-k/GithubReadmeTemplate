@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Form from '~/components/contents/readme-form'
-import Sample from '~/components/parts/readme-form-sample'
+import Form from '~/components/contents/readme-form.vue'
+import Sample from '~/components/parts/readme-form-sample.vue'
 export default {
   components: {
     Form,
