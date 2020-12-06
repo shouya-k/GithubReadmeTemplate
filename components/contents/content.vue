@@ -18,15 +18,11 @@
                 </v-list-item-icon>
                 <v-list-item-title class="subtitle-1">Update</v-list-item-title>
               </v-list-item> -->
-              <v-list-item link>
+              <v-list-item link @click="deleteReadmes(readme)">
                 <v-list-item-icon>
                   <v-icon dense left>fa-trash</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title
-                  class="subtitle-1"
-                  @click="deleteReadmes(readme)"
-                  >Delete</v-list-item-title
-                >
+                <v-list-item-title class="subtitle-1">Delete</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
