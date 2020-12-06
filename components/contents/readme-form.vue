@@ -5,7 +5,8 @@
       <v-text-field
         v-model="form.name"
         label="プロジェクト名前 / Project Title"
-        :rules="[required]"
+        :rules="[required, counter]"
+        counter="25"
       ></v-text-field>
       <v-text-field
         v-model="form.overview"
@@ -150,7 +151,13 @@ export default defineComponent({
     })
 
     const formRules = ref(null)
+    const max = ref(25)
     const required = ref((value) => !!value || '必ず入力してください。')
+    const counter = ref(
+      (value) =>
+        (!!value && max.value >= value.length) ||
+        `${max.value}文字以下で入力してください。`
+    )
 
     const createdReadme = async () => {
       if (formRules.value.validate()) {
@@ -212,6 +219,7 @@ export default defineComponent({
       form,
       formRules,
       required,
+      counter,
       createdReadme,
       ...toRefs(field),
       addBuildField,
