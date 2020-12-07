@@ -148,6 +148,7 @@ export default defineComponent({
       technology6: '',
       author: '',
       modal: false,
+      editModal: false,
     })
 
     const formRules = ref(null)
