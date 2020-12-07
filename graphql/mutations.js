@@ -28,11 +28,12 @@ export const createReadme = /* GraphQL */ `
       technology6
       author
       modal
+      editModal
       createdAt
       updatedAt
     }
   }
-`;
+`
 export const updateReadme = /* GraphQL */ `
   mutation UpdateReadme(
     $input: UpdateReadmeInput!
@@ -60,11 +61,12 @@ export const updateReadme = /* GraphQL */ `
       technology6
       author
       modal
+      editModal
       createdAt
       updatedAt
     }
   }
-`;
+`
 export const deleteReadme = /* GraphQL */ `
   mutation DeleteReadme(
     $input: DeleteReadmeInput!
@@ -92,8 +94,9 @@ export const deleteReadme = /* GraphQL */ `
       technology6
       author
       modal
+      editModal
       createdAt
       updatedAt
     }
   }
-`;
+`

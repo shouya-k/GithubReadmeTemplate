@@ -25,11 +25,10 @@ export const getReadme = /* GraphQL */ `
       technology6
       author
       modal
-      createdAt
-      updatedAt
+      editModal
     }
   }
-`;
+`
 export const listReadmes = /* GraphQL */ `
   query ListReadmes(
     $filter: ModelReadmeFilterInput
@@ -59,10 +58,11 @@ export const listReadmes = /* GraphQL */ `
         technology6
         author
         modal
+        editModal
         createdAt
         updatedAt
       }
       nextToken
     }
   }
-`;
+`

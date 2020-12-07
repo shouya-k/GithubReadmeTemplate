@@ -12,21 +12,17 @@
               </v-btn>
             </template>
             <v-list dense>
-              <!-- <v-list-item link>
+              <v-list-item link @click="showEditModal(readme)">
                 <v-list-item-icon>
                   <v-icon dense left>fa-pen</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="subtitle-1">Update</v-list-item-title>
-              </v-list-item> -->
-              <v-list-item link>
+              </v-list-item>
+              <v-list-item link @click="deleteReadmes(readme)">
                 <v-list-item-icon>
                   <v-icon dense left>fa-trash</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title
-                  class="subtitle-1"
-                  @click="deleteReadmes(readme)"
-                  >Delete</v-list-item-title
-                >
+                <v-list-item-title class="subtitle-1">Delete</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -38,6 +34,11 @@
           <v-btn class="card__btn" @click="showModal(readme)">詳細</v-btn>
         </v-layout>
       </v-card>
+      <EditModal
+        :edit="readme"
+        :readme="editReadme"
+        @hiddenModal="hiddenEditModal"
+      ></EditModal>
       <div v-show="readme.modal">
         <v-card class="modal">
           <v-card-text>{{ '# ' + readme.name }}</v-card-text>
@@ -109,9 +110,13 @@
 <script lang="ts">
 import { ref, defineComponent } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
-import { listReadmes } from '../../graphql/queries'
+import { listReadmes, getReadme } from '../../graphql/queries'
 import { deleteReadme } from '../../graphql/mutations'
+import EditModal from '../parts/edit-content.vue'
 export default defineComponent({
+  components: {
+    EditModal,
+  },
   setup() {
     const readmes = ref([])
 
@@ -147,12 +152,35 @@ export default defineComponent({
       return `<img src="${img}" alt="attach:cat" title="attach:cat" width="800">`
     }
 
+    const getEditReadme = async (id) => {
+      const getdata: any = await API.graphql({
+        query: getReadme,
+        variables: {
+          id,
+        },
+      })
+      editReadme.value = getdata.data.getReadme
+    }
+
+    const editReadme = ref({})
+    const showEditModal = (readme) => {
+      getEditReadme(readme.id)
+      readme.editModal = true
+    }
+    const hiddenEditModal = (readme) => {
+      readme.editModal = false
+      getReadmes()
+    }
+
     return {
       readmes,
       showModal,
       hiddenModal,
       image,
       deleteReadmes,
+      editReadme,
+      showEditModal,
+      hiddenEditModal,
     }
   },
 })
@@ -186,20 +214,20 @@ export default defineComponent({
   top: 0;
   left: 0;
   right: 0;
-  z-index: 4;
+  z-index: 10;
 
   &__pre {
     padding: 0 20px;
   }
 
   &__bg {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 6;
   }
 
   &__btn {
