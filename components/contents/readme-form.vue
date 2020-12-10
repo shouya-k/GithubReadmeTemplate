@@ -151,16 +151,16 @@ export default defineComponent({
       editModal: false,
     })
 
-    const formRules = ref(null)
+    const formRules = ref()
     const max = ref(25)
-    const required = ref((value) => !!value || '必ず入力してください。')
+    const required = ref((value: string) => !!value || '必ず入力してください。')
     const counter = ref(
-      (value) =>
+      (value: string) =>
         (!!value && max.value >= value.length) ||
         `${max.value}文字以下で入力してください。`
     )
 
-    const createdReadme = async () => {
+    const createdReadme = async (): Promise<void> => {
       if (formRules.value.validate()) {
         try {
           await API.graphql({
@@ -189,7 +189,7 @@ export default defineComponent({
       technology5: false,
     })
 
-    const addBuildField = () => {
+    const addBuildField = (): void => {
       if (field.build1 === false) {
         field.build1 = true
       } else if (field.build2 === false) {
@@ -202,7 +202,7 @@ export default defineComponent({
         field.build5 = true
       }
     }
-    const addTechnologyField = () => {
+    const addTechnologyField = (): void => {
       if (field.technology1 === false) {
         field.technology1 = true
       } else if (field.technology2 === false) {
