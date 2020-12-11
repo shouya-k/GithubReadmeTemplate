@@ -5,5 +5,11 @@
     >
 
     <v-spacer></v-spacer>
+
+    <v-btn link nuxt to="/signin" class="font-weight-bold mr-2"
+      >サインイン</v-btn
+    >
+
+    <v-btn link nuxt to="/signup" class="font-weight-bold">サインアップ</v-btn>
   </v-app-bar>
 </template>

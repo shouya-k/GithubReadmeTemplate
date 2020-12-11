@@ -56,7 +56,7 @@ export default defineComponent({
     const confirmSignUp = async (): Promise<void> => {
       try {
         await Auth.confirmSignUp(form.username, form.confirmCode)
-        router.push('/')
+        router.push('/signin')
       } catch (error) {
         console.log('error confirming sign up', error)
       }

@@ -85,7 +85,7 @@ export default defineComponent({
   components: {
     ConfirmSignUp,
   },
-  setup() {
+  setup(props, context) {
     const form = reactive({
       username: '',
       email: '',

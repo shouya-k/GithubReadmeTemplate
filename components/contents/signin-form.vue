@@ -64,8 +64,8 @@ export default defineComponent({
 
     const signIn = async (): Promise<void> => {
       try {
-        const user = await Auth.signIn(form.username, form.password)
-        console.log(user)
+        await Auth.signIn(form.username, form.password)
+        await Auth.currentAuthenticatedUser()
         router.push('/')
       } catch (error) {
         console.log('error signing in', error)
