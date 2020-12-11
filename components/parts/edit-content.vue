@@ -122,11 +122,11 @@ export default defineComponent({
       context.emit('hiddenModal', props.edit)
     }
 
-    const formRules = ref(null)
+    const formRules = ref()
     const max = ref(25)
-    const required = ref((value) => !!value || '必ず入力してください。')
+    const required = ref((value: string) => !!value || '必ず入力してください。')
     const counter = ref(
-      (value) =>
+      (value: string) =>
         (!!value && max.value >= value.length) ||
         `${max.value}文字以下で入力してください。`
     )

@@ -152,7 +152,7 @@ export default defineComponent({
       return `<img src="${img}" alt="attach:cat" title="attach:cat" width="800">`
     }
 
-    const getEditReadme = async (id) => {
+    const getEditReadme = async (id: string) => {
       const getdata: any = await API.graphql({
         query: getReadme,
         variables: {
@@ -163,11 +163,11 @@ export default defineComponent({
     }
 
     const editReadme = ref({})
-    const showEditModal = (readme) => {
+    const showEditModal = (readme: { id: string; editModal: boolean }) => {
       getEditReadme(readme.id)
       readme.editModal = true
     }
-    const hiddenEditModal = (readme) => {
+    const hiddenEditModal = (readme: { editModal: boolean }) => {
       readme.editModal = false
       getReadmes()
     }
