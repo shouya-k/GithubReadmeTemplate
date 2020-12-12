@@ -12,6 +12,7 @@
           placeholder="ユーザー名"
           prepend-icon="fa-user-circle"
           filled
+          readonly
         ></v-text-field>
         <v-text-field
           v-model="confirmCode"
@@ -44,19 +45,25 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    pass: {
+      type: String,
+      default: '',
+    },
   },
   setup(props, context) {
     const router = context.root.$router
 
     const form = reactive({
       username: props.name,
+      password: props.pass,
       confirmCode: '',
     })
 
     const confirmSignUp = async (): Promise<void> => {
       try {
         await Auth.confirmSignUp(form.username, form.confirmCode)
-        router.push('/signin')
+        await Auth.signIn(form.username, form.password)
+        router.push('/')
       } catch (error) {
         console.log('error confirming sign up', error)
       }
