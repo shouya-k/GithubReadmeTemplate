@@ -1,6 +1,11 @@
 <template>
   <div>
-    <confirm-sign-up v-if="confirm" :name="username" :pass="password" />
+    <confirm-sign-up
+      v-if="confirm"
+      :name="username"
+      :pass="password"
+      :email="email"
+    />
     <v-card v-else class="mx-auto" max-width="500">
       <v-card-title class="pa-5 mt-10">
         <h4 class="card__title">Sign up</h4>

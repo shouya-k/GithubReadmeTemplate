@@ -29,11 +29,20 @@ export const createReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
   }
-`
+`;
 export const updateReadme = /* GraphQL */ `
   mutation UpdateReadme(
     $input: UpdateReadmeInput!
@@ -62,11 +71,20 @@ export const updateReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
   }
-`
+`;
 export const deleteReadme = /* GraphQL */ `
   mutation DeleteReadme(
     $input: DeleteReadmeInput!
@@ -95,8 +113,65 @@ export const deleteReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
   }
-`
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      email
+      img
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      email
+      img
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      userId
+      name
+      email
+      img
+      createdAt
+      updatedAt
+    }
+  }
+`;

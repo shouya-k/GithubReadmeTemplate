@@ -39,9 +39,14 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from '@nuxtjs/composition-api'
 import { Auth } from 'aws-amplify'
+import { userData } from '~/conpositions/user-data'
 export default defineComponent({
   props: {
     name: {
+      type: String,
+      default: '',
+    },
+    email: {
       type: String,
       default: '',
     },
@@ -54,15 +59,23 @@ export default defineComponent({
     const router = context.root.$router
 
     const form = reactive({
+      userId: '',
       username: props.name,
+      useremail: props.email,
+      img:
+        'https://user-images.githubusercontent.com/65233189/102001614-7166f300-3d37-11eb-84a8-3e14ba2b84f8.png',
       password: props.pass,
       confirmCode: '',
     })
 
+    const { createdUser } = userData()
+
     const confirmSignUp = async (): Promise<void> => {
       try {
         await Auth.confirmSignUp(form.username, form.confirmCode)
-        await Auth.signIn(form.username, form.password)
+        const user = await Auth.signIn(form.username, form.password)
+        form.userId = user.attributes.sub
+        createdUser(form)
         router.push('/')
       } catch (error) {
         console.log('error confirming sign up', error)

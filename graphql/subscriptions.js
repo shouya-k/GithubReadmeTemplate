@@ -26,6 +26,15 @@ export const onCreateReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -56,6 +65,15 @@ export const onUpdateReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -86,6 +104,54 @@ export const onDeleteReadme = /* GraphQL */ `
       author
       modal
       editModal
+      user {
+        id
+        userId
+        name
+        email
+        img
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser {
+    onCreateUser {
+      id
+      userId
+      name
+      email
+      img
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser {
+    onUpdateUser {
+      id
+      userId
+      name
+      email
+      img
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser {
+    onDeleteUser {
+      id
+      userId
+      name
+      email
+      img
       createdAt
       updatedAt
     }

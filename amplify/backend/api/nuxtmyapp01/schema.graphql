@@ -21,4 +21,13 @@ type Readme @model {
   author: String
   modal: Boolean
   editModal: Boolean
+  user: User @connection
+}
+
+type User @model @searchable {
+  id: ID!
+  userId: String!
+  name: String
+  email: String
+  img: String
 }
