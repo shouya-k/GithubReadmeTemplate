@@ -1,11 +1,6 @@
 <template>
   <div>
-    <confirm-sign-up
-      v-if="confirm"
-      :name="username"
-      :pass="password"
-      :email="email"
-    />
+    <confirm-sign-up v-if="confirm" :name="username" :pass="password" />
     <v-card v-else class="mx-auto" max-width="500">
       <v-card-title class="pa-5 mt-10">
         <h4 class="card__title">Sign up</h4>
@@ -94,6 +89,8 @@ export default defineComponent({
     const form = reactive({
       username: '',
       email: '',
+      img:
+        'https://user-images.githubusercontent.com/65233189/102001614-7166f300-3d37-11eb-84a8-3e14ba2b84f8.png',
       password: '',
       passwordConfirm: '',
       confirm: false,
@@ -106,7 +103,9 @@ export default defineComponent({
             username: form.username,
             password: form.password,
             attributes: {
-              email: form.email, // optional
+              email: form.email,
+              picture: form.img,
+              nickname: form.username,
             },
           })
           console.log(user)

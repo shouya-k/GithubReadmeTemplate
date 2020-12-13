@@ -1,4 +1,6 @@
-type Readme @model {
+type Readme
+  @model
+  @auth(rules: [{ allow: owner }, { allow: private, operations: [read] }]) {
   id: ID!
   name: String!
   overview: String
@@ -21,13 +23,4 @@ type Readme @model {
   author: String
   modal: Boolean
   editModal: Boolean
-  user: User @connection
-}
-
-type User @model @searchable {
-  id: ID!
-  userId: String!
-  name: String
-  email: String
-  img: String
 }

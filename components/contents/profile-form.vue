@@ -60,15 +60,11 @@
 </template>
 
 <script lang="ts">
-import { Auth, API } from 'aws-amplify'
+import { Auth } from 'aws-amplify'
 import { defineComponent, reactive, ref, toRefs } from '@nuxtjs/composition-api'
-import { searchUsers } from '~/graphql/queries'
-import { updateUser } from '~/graphql/mutations'
-// import { userData } from '~/conpositions/user-data'
 export default defineComponent({
   setup() {
     const form = reactive({
-      id: '',
       username: '',
       email: '',
       img: '',
@@ -92,21 +88,9 @@ export default defineComponent({
     const getUser = async () => {
       try {
         const user = await Auth.currentAuthenticatedUser()
-        const userData: any = await API.graphql({
-          query: searchUsers,
-          variables: {
-            filters: {
-              userId: {
-                match: user.attributes.sub,
-              },
-            },
-          },
-        })
-        const data = userData.data.searchUsers.items[0]
-        form.id = data.id
-        form.username = data.name
-        form.email = data.email
-        form.img = data.img
+        form.username = user.attributes.nickname
+        form.email = user.attributes.email
+        form.img = user.attributes.picture
       } catch (error) {
         console.log(error)
       }
@@ -116,18 +100,9 @@ export default defineComponent({
 
     const updateName = async () => {
       try {
-        await API.graphql({
-          query: updateUser,
-          variables: {
-            input: {
-              id: form.id,
-              name: form.username,
-            },
-          },
-        })
         const user = await Auth.currentAuthenticatedUser()
         await Auth.updateUserAttributes(user, {
-          name: form.username,
+          nickname: form.username,
         })
       } catch (error) {
         console.log(error)
