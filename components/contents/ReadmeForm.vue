@@ -121,16 +121,18 @@
 
 <script lang="ts">
 import { reactive, ref, toRefs, defineComponent } from '@nuxtjs/composition-api'
-import { API } from 'aws-amplify'
+import { API, Auth } from 'aws-amplify'
 import { createReadme } from '~/graphql/mutations'
-import { addTextField } from '~/conpositions/add-text-field'
+import { searchUsers } from '~/graphql/queries'
+import { addTextField } from '~/conpositions/useAddTextField'
 export default defineComponent({
   setup(props, context) {
-    const router = context.root.$router
+    // const router = context.root.$router
 
     const { field, addBuildField, addTechnologyField } = addTextField()
 
     const form = reactive({
+      readmeUserId: '',
       name: '',
       overview: '',
       img1: '',
@@ -163,6 +165,23 @@ export default defineComponent({
         `${max.value}文字以下で入力してください。`
     )
 
+    const getUserId = async () => {
+      const user = await Auth.currentAuthenticatedUser()
+      const data: any = await API.graphql({
+        query: searchUsers,
+        variables: {
+          filter: {
+            uid: {
+              match: user.attributes.sub,
+            },
+          },
+        },
+      })
+      form.readmeUserId = data.data.searchUsers.items[0].id
+    }
+
+    getUserId()
+
     const createdReadme = async (): Promise<void> => {
       if (formRules.value.validate()) {
         try {
@@ -172,7 +191,7 @@ export default defineComponent({
               input: form,
             },
           })
-          router.push('/')
+          location.replace('/')
         } catch (error) {
           console.log(error)
         }

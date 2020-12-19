@@ -7,9 +7,9 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { currentAuthUser } from '~/conpositions/currentAuthUser'
-import Header from '~/components/layout/header.vue'
-import Form from '~/components/contents/profile-form.vue'
+import { currentAuthUser } from '~/conpositions/useCurrentAuthUser'
+import Header from '~/components/layout/Header.vue'
+import Form from '~/components/contents/ProfileForm.vue'
 export default defineComponent({
   components: {
     Header,

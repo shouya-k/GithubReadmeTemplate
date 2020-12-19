@@ -12,10 +12,10 @@
 
 <script>
 import { defineComponent } from '@nuxtjs/composition-api'
-import { currentAuthUser } from '@/conpositions/currentAuthUser'
-import Header from '../components/layout/header.vue'
-import Form from '~/components/contents/readme-form.vue'
-import Sample from '~/components/parts/readme-form-sample.vue'
+import { currentAuthUser } from '~/conpositions/useCurrentAuthUser'
+import Header from '~/components/layout/Header'
+import Form from '~/components/contents/ReadmeForm'
+import Sample from '~/components/parts/ReadmeFormSample'
 export default defineComponent({
   components: {
     Header,

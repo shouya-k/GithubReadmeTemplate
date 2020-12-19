@@ -80,7 +80,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, ref } from '@nuxtjs/composition-api'
 import { Auth } from 'aws-amplify'
-import ConfirmSignUp from '../parts/signup-confirm.vue'
+import ConfirmSignUp from '~/components/parts/SignupConfirm.vue'
 export default defineComponent({
   components: {
     ConfirmSignUp,

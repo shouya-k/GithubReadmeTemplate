@@ -1,6 +1,7 @@
 type Readme
   @model
-  @auth(rules: [{ allow: owner }, { allow: private, operations: [read] }]) {
+  @auth(rules: [{ allow: owner }, { allow: private, operations: [read] }])
+  @searchable {
   id: ID!
   name: String!
   overview: String
@@ -23,4 +24,14 @@ type Readme
   author: String
   modal: Boolean
   editModal: Boolean
+  createdAt: AWSDateTime
+  user: User @connection(name: "UserReadme")
+}
+
+type User @model @searchable {
+  id: ID!
+  uid: String
+  name: String
+  img: String
+  readmes: [Readme] @connection(name: "UserReadme")
 }

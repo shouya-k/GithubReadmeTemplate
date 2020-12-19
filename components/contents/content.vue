@@ -2,37 +2,51 @@
   <div>
     <div v-for="readme in readmes" :key="readme.id">
       <v-card class="card">
-        <v-card-title class="card__title"
-          ><v-btn :href="readme.url" icon><v-icon>fa-link</v-icon></v-btn
-          >{{ readme.name }}
-          <v-menu transition="slide-y-transition">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="card__title--btn" icon v-bind="attrs" v-on="on"
-                ><v-icon>fa-ellipsis-v</v-icon>
-              </v-btn>
-            </template>
-            <v-list dense>
-              <v-list-item link @click="showEditModal(readme)">
-                <v-list-item-icon>
-                  <v-icon dense left>fa-pen</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title class="subtitle-1">Update</v-list-item-title>
-              </v-list-item>
-              <v-list-item link @click="deleteReadmes(readme)">
-                <v-list-item-icon>
-                  <v-icon dense left>fa-trash</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title class="subtitle-1">Delete</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-card-title>
-        <v-layout>
-          <v-card-text>{{
-            '作成日: ' + readme.createdAt.replace('T', ' ').slice(0, 19)
-          }}</v-card-text>
-          <v-btn class="card__btn" @click="showModal(readme)">詳細</v-btn>
-        </v-layout>
+        <div>
+          <v-layout class="card__profile">
+            <v-img :src="readme.user.img" class="card__img"></v-img>
+            <v-card-text class="card__name">{{ readme.user.name }}</v-card-text>
+            <v-menu transition="slide-y-transition" class="card__menu">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="card__profile--btn" icon v-bind="attrs" v-on="on"
+                  ><v-icon>fa-ellipsis-v</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <v-list-item link @click="showEditModal(readme)">
+                  <v-list-item-icon>
+                    <v-icon dense left>fa-pen</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title class="subtitle-1"
+                    >Update</v-list-item-title
+                  >
+                </v-list-item>
+                <v-list-item link @click="deleteReadmes(readme)">
+                  <v-list-item-icon>
+                    <v-icon dense left>fa-trash</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title class="subtitle-1"
+                    >Delete</v-list-item-title
+                  >
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-layout>
+        </div>
+        <div class="card__inner">
+          <v-card-title class="card__title"
+            ><v-btn :href="readme.url" icon><v-icon>fa-link</v-icon></v-btn
+            >{{ readme.name }}
+          </v-card-title>
+          <v-layout>
+            <v-card-text
+              >{{
+                '作成日: ' + readme.createdAt.replace('T', ' ').slice(0, 19)
+              }}
+            </v-card-text>
+            <v-btn class="card__btn" @click="showModal(readme)">詳細</v-btn>
+          </v-layout>
+        </div>
       </v-card>
       <EditModal
         :edit="readme"
@@ -110,9 +124,9 @@
 <script lang="ts">
 import { ref, defineComponent } from '@nuxtjs/composition-api'
 import { API } from 'aws-amplify'
-import { listReadmes, getReadme } from '../../graphql/queries'
+import { searchReadmes, getReadme } from '../../graphql/queries'
 import { deleteReadme } from '../../graphql/mutations'
-import EditModal from '../parts/edit-content.vue'
+import EditModal from '~/components/parts/EditContent.vue'
 export default defineComponent({
   components: {
     EditModal,
@@ -122,9 +136,16 @@ export default defineComponent({
 
     const getReadmes = async () => {
       const readme: any = await API.graphql({
-        query: listReadmes,
+        query: searchReadmes,
+        variables: {
+          sort: {
+            field: 'createdAt',
+            direction: 'desc',
+          },
+          limit: 30,
+        },
       })
-      readmes.value = readme.data.listReadmes.items
+      readmes.value = readme.data.searchReadmes.items
     }
     getReadmes()
 
@@ -139,6 +160,7 @@ export default defineComponent({
           },
         })
         getReadmes()
+        location.reload()
       } catch (error) {
         console.log(error)
       }
@@ -170,7 +192,39 @@ export default defineComponent({
     const hiddenEditModal = (readme: { editModal: boolean }) => {
       readme.editModal = false
       getReadmes()
+      location.reload()
     }
+
+    // const getUserData = computed((id) => {
+    //   const data = API.graphql({
+    //     query: searchUsers,
+    //     variables: {
+    //       uid: {
+    //         match: id,
+    //       },
+    //     },
+    //   })
+    //   return data.data.searchUsers.items[0]
+    // })
+
+    // const getUserData = async (id: String) => {
+    //   try {
+    //     const userData: any = await API.graphql({
+    //       query: searchUsers,
+    //       variables: {
+    //         filter: {
+    //           uid: {
+    //             match: id,
+    //           },
+    //         },
+    //       },
+    //     })
+    //     const data = userData.data.searchUsers.items[0]
+    //     return data
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
 
     return {
       readmes,
@@ -189,15 +243,38 @@ export default defineComponent({
 <style lang="scss" scoped>
 .card {
   width: 30%;
-  padding: 10px;
   margin: 40px auto;
 
-  &__title {
-    margin-bottom: 20px;
+  &__profile {
+    background-color: #bdbdbd;
+
+    &--btn {
+      margin: auto 15px;
+    }
   }
 
-  &__title--btn {
-    margin-left: auto;
+  &__name {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  &__img {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    margin: auto 0 auto 10px;
+  }
+
+  &__inner {
+    padding: 10px;
+  }
+
+  &__title {
+    font-size: 24px;
+    margin-bottom: 20px;
   }
 
   &__btn {
