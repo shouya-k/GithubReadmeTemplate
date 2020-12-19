@@ -8,8 +8,8 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import { Auth } from 'aws-amplify'
-import Header from '../components/layout/login-header.vue'
-import Form from '../components/contents/signup-form.vue'
+import Header from '~/components/layout/LoginHeader.vue'
+import Form from '~/components/contents/SignupForm.vue'
 export default defineComponent({
   components: {
     Header,

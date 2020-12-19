@@ -121,13 +121,18 @@
 
 <script lang="ts">
 import { reactive, ref, toRefs, defineComponent } from '@nuxtjs/composition-api'
-import { API } from 'aws-amplify'
-import { createReadme } from '../../graphql/mutations'
+import { API, Auth } from 'aws-amplify'
+import { createReadme } from '~/graphql/mutations'
+import { searchUsers } from '~/graphql/queries'
+import { addTextField } from '~/conpositions/useAddTextField'
 export default defineComponent({
   setup(props, context) {
-    const router = context.root.$router
+    // const router = context.root.$router
+
+    const { field, addBuildField, addTechnologyField } = addTextField()
 
     const form = reactive({
+      readmeUserId: '',
       name: '',
       overview: '',
       img1: '',
@@ -160,6 +165,23 @@ export default defineComponent({
         `${max.value}文字以下で入力してください。`
     )
 
+    const getUserId = async () => {
+      const user = await Auth.currentAuthenticatedUser()
+      const data: any = await API.graphql({
+        query: searchUsers,
+        variables: {
+          filter: {
+            uid: {
+              match: user.attributes.sub,
+            },
+          },
+        },
+      })
+      form.readmeUserId = data.data.searchUsers.items[0].id
+    }
+
+    getUserId()
+
     const createdReadme = async (): Promise<void> => {
       if (formRules.value.validate()) {
         try {
@@ -169,50 +191,10 @@ export default defineComponent({
               input: form,
             },
           })
-          router.push('/')
+          location.replace('/')
         } catch (error) {
           console.log(error)
         }
-      }
-    }
-
-    const field = reactive({
-      build1: false,
-      build2: false,
-      build3: false,
-      build4: false,
-      build5: false,
-      technology1: false,
-      technology2: false,
-      technology3: false,
-      technology4: false,
-      technology5: false,
-    })
-
-    const addBuildField = (): void => {
-      if (field.build1 === false) {
-        field.build1 = true
-      } else if (field.build2 === false) {
-        field.build2 = true
-      } else if (field.build3 === false) {
-        field.build3 = true
-      } else if (field.build4 === false) {
-        field.build4 = true
-      } else if (field.build5 === false) {
-        field.build5 = true
-      }
-    }
-    const addTechnologyField = (): void => {
-      if (field.technology1 === false) {
-        field.technology1 = true
-      } else if (field.technology2 === false) {
-        field.technology2 = true
-      } else if (field.technology3 === false) {
-        field.technology3 = true
-      } else if (field.technology4 === false) {
-        field.technology4 = true
-      } else if (field.technology5 === false) {
-        field.technology5 = true
       }
     }
 

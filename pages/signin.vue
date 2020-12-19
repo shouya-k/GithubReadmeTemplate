@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Header from '../components/layout/login-header.vue'
-import Form from '../components/contents/signin-form.vue'
+import Header from '~/components/layout/LoginHeader'
+import Form from '~/components/contents/SigninForm'
 export default {
   components: {
     Header,

@@ -6,12 +6,20 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn link nuxt to="/form" class="mr-1" icon>
-      <v-icon title="作成する">fa-plus-circle</v-icon>
+    <v-btn link nuxt to="/" class="mr-3" icon>
+      <v-icon title="ホーム">mdi-home</v-icon>
+    </v-btn>
+
+    <v-btn link nuxt to="/profile" class="mr-3" icon>
+      <v-icon title="プロフィール">mdi-account</v-icon>
+    </v-btn>
+
+    <v-btn link nuxt to="/form" class="mr-3" icon>
+      <v-icon title="作成する">mdi-plus-circle</v-icon>
     </v-btn>
 
     <v-btn icon>
-      <v-icon title="サインアウト" @click="signout">fa-sign-out-alt</v-icon>
+      <v-icon title="サインアウト" @click="signout">mdi-logout</v-icon>
     </v-btn>
   </v-app-bar>
 </template>

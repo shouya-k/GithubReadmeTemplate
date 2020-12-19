@@ -12,6 +12,7 @@
           placeholder="ユーザー名"
           prepend-icon="fa-user-circle"
           filled
+          readonly
         ></v-text-field>
         <v-text-field
           v-model="confirmCode"
@@ -37,10 +38,15 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from '@nuxtjs/composition-api'
-import { Auth } from 'aws-amplify'
+import { Auth, API } from 'aws-amplify'
+import { createUser } from '~/graphql/mutations'
 export default defineComponent({
   props: {
     name: {
+      type: String,
+      default: '',
+    },
+    pass: {
       type: String,
       default: '',
     },
@@ -50,13 +56,25 @@ export default defineComponent({
 
     const form = reactive({
       username: props.name,
+      password: props.pass,
       confirmCode: '',
     })
 
     const confirmSignUp = async (): Promise<void> => {
       try {
         await Auth.confirmSignUp(form.username, form.confirmCode)
-        router.push('/signin')
+        const user = await Auth.signIn(form.username, form.password)
+        await API.graphql({
+          query: createUser,
+          variables: {
+            input: {
+              uid: user.attributes.sub,
+              name: user.attributes.nickname,
+              img: user.attributes.picture,
+            },
+          },
+        })
+        router.push('/')
       } catch (error) {
         console.log('error confirming sign up', error)
       }

@@ -5,8 +5,7 @@ export const currentAuthUser = (props, context) => {
 
   const getCurrentUser = async () => {
     try {
-      const currentUser = await Auth.currentAuthenticatedUser()
-      console.log(currentUser)
+      await Auth.currentAuthenticatedUser()
     } catch (error) {
       console.log(error)
       router.push('/signup')
