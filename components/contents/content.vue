@@ -13,7 +13,7 @@
                 </v-btn>
               </template>
               <v-list dense>
-                <v-list-item link @click="showEditModal(readme)">
+                <v-list-item link @click.stop="showEditModal(readme)">
                   <v-list-item-icon>
                     <v-icon dense left>fa-pen</v-icon>
                   </v-list-item-icon>
@@ -21,13 +21,55 @@
                     >Update</v-list-item-title
                   >
                 </v-list-item>
-                <v-list-item link @click="deleteReadmes(readme)">
+                <v-dialog v-model="dialog.update" max-width="500px">
+                  <v-card>
+                    <v-card-title class="headline pt-5"
+                      >投稿の編集</v-card-title
+                    >
+                    <v-card-text class="subtitle-1 py-5"
+                      >投稿者しか編集をする事が出来ません。</v-card-text
+                    >
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn text @click.stop="dialog.update = false"
+                        >キャンセル</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+                <v-list-item
+                  link
+                  @click.stop="showDeleteDialog(readme.user.uid)"
+                >
                   <v-list-item-icon>
                     <v-icon dense left>fa-trash</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title class="subtitle-1"
                     >Delete</v-list-item-title
                   >
+                  <v-dialog v-model="dialog.delete" max-width="500px">
+                    <v-card>
+                      <v-card-title class="headline pt-5"
+                        >投稿を削除</v-card-title
+                      >
+                      <v-card-text class="subtitle-1 py-5">{{
+                        dialog.message
+                      }}</v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text @click.stop="dialog.delete = false"
+                          >キャンセル</v-btn
+                        >
+                        <v-btn
+                          v-show="dialog.deleteBtn"
+                          text
+                          color="red"
+                          @click="deleteReadmes(readme)"
+                          >削除する</v-btn
+                        >
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -122,8 +164,8 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from '@nuxtjs/composition-api'
-import { API } from 'aws-amplify'
+import { ref, defineComponent, reactive } from '@nuxtjs/composition-api'
+import { API, Auth } from 'aws-amplify'
 import { searchReadmes, getReadme } from '../../graphql/queries'
 import { deleteReadme } from '../../graphql/mutations'
 import EditModal from '~/components/parts/EditContent.vue'
@@ -149,23 +191,6 @@ export default defineComponent({
     }
     getReadmes()
 
-    const deleteReadmes = async (readme: { id: string }) => {
-      try {
-        await API.graphql({
-          query: deleteReadme,
-          variables: {
-            input: {
-              id: readme.id,
-            },
-          },
-        })
-        getReadmes()
-        location.reload()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
     const showModal = (readme: { modal: boolean }) => (readme.modal = true)
 
     const hiddenModal = (readme: { modal: boolean }) => (readme.modal = false)
@@ -185,46 +210,60 @@ export default defineComponent({
     }
 
     const editReadme = ref({})
-    const showEditModal = (readme: { id: string; editModal: boolean }) => {
-      getEditReadme(readme.id)
-      readme.editModal = true
+    const showEditModal = async (readme: {
+      user: { uid: string }
+      id: string
+      editModal: boolean
+    }) => {
+      const user = await Auth.currentAuthenticatedUser()
+      if (readme.user.uid === user.attributes.sub) {
+        getEditReadme(readme.id)
+        readme.editModal = true
+        dialog.update = false
+      } else {
+        dialog.update = true
+      }
     }
     const hiddenEditModal = (readme: { editModal: boolean }) => {
       readme.editModal = false
       getReadmes()
-      location.reload()
     }
 
-    // const getUserData = computed((id) => {
-    //   const data = API.graphql({
-    //     query: searchUsers,
-    //     variables: {
-    //       uid: {
-    //         match: id,
-    //       },
-    //     },
-    //   })
-    //   return data.data.searchUsers.items[0]
-    // })
+    const dialog = reactive({
+      update: false,
+      delete: false,
+      message: '',
+      deleteBtn: false,
+    })
 
-    // const getUserData = async (id: String) => {
-    //   try {
-    //     const userData: any = await API.graphql({
-    //       query: searchUsers,
-    //       variables: {
-    //         filter: {
-    //           uid: {
-    //             match: id,
-    //           },
-    //         },
-    //       },
-    //     })
-    //     const data = userData.data.searchUsers.items[0]
-    //     return data
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
+    const showDeleteDialog = async (uid: String) => {
+      const user = await Auth.currentAuthenticatedUser()
+      dialog.delete = true
+      if (uid === user.attributes.sub) {
+        dialog.message = '本当にこの投稿を削除しますか？'
+        dialog.deleteBtn = true
+      } else {
+        dialog.message = '投稿者しか投稿を削除する事は出来ません。'
+        dialog.deleteBtn = false
+      }
+    }
+
+    const deleteReadmes = async (readme: { id: string }) => {
+      try {
+        await API.graphql({
+          query: deleteReadme,
+          variables: {
+            input: {
+              id: readme.id,
+            },
+          },
+        })
+        getReadmes()
+        location.reload()
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     return {
       readmes,
@@ -235,6 +274,8 @@ export default defineComponent({
       editReadme,
       showEditModal,
       hiddenEditModal,
+      dialog,
+      showDeleteDialog,
     }
   },
 })
