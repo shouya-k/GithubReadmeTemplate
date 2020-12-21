@@ -6,7 +6,19 @@
         ><h2 class="card__title pa-2">プロフィール</h2></v-card-title
       >
       <v-divider class="mb-4"></v-divider>
-      <v-img :src="img" class="card__img mb-4"></v-img>
+      <div class="card__images">
+        <v-img
+          v-if="uploadImage"
+          :src="uploadImage"
+          class="card__img mb-4"
+        ></v-img>
+        <v-img v-else :src="img" class="card__img mb-4"></v-img>
+
+        <label class="card__file">
+          <v-icon color="#fff" medium>fa-camera</v-icon>
+          <input type="file" @change="onImageUploaded" style="display: none" />
+        </label>
+      </div>
       <v-divider class="mb-4"></v-divider>
       <v-form ref="formRules" class="form">
         <v-text-field
@@ -105,7 +117,6 @@ export default defineComponent({
         const user = await Auth.currentAuthenticatedUser()
         form.username = user.attributes.nickname
         form.email = user.attributes.email
-        form.img = user.attributes.picture
         const data: any = await API.graphql({
           query: searchUsers,
           variables: {
@@ -117,6 +128,7 @@ export default defineComponent({
           },
         })
         form.id = data.data.searchUsers.items[0].id
+        form.img = data.data.searchUsers.items[0].img
       } catch (error) {
         console.log(error)
       }
@@ -157,6 +169,40 @@ export default defineComponent({
       }
     }
 
+    const uploadImage = ref()
+
+    const onImageUploaded = (e: any): void => {
+      const img = e.target.files[0]
+      createImage(img)
+    }
+
+    const createImage = (image: any): void => {
+      const reader = new FileReader()
+      reader.readAsDataURL(image)
+      reader.onload = () => {
+        uploadImage.value = reader.result
+
+        updateImage()
+      }
+    }
+
+    const updateImage = async (): Promise<void> => {
+      try {
+        await API.graphql({
+          query: updateUser,
+          variables: {
+            input: {
+              id: form.id,
+              img: uploadImage.value,
+            },
+          },
+        })
+        getUser()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     return {
       ...toRefs(form),
       showOldPassword,
@@ -164,6 +210,8 @@ export default defineComponent({
       changePassword,
       updateName,
       updateEmail,
+      onImageUploaded,
+      uploadImage,
     }
   },
 })
@@ -175,13 +223,27 @@ export default defineComponent({
     margin: 0 auto;
   }
 
+  &__images {
+    position: relative;
+  }
+
   &__img {
     display: block;
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     border: 1px solid rgba(34, 36, 38, 0.15);
     margin: 0 auto;
+  }
+
+  &__file {
+    position: absolute;
+    top: 45%;
+    left: 47%;
+    cursor: pointer;
+    padding: 0 1px 0 2px;
+    background-color: rgba(34, 36, 38, 0.5);
+    border-radius: 5px;
   }
 }
 
