@@ -2,7 +2,12 @@ import { API, Auth } from 'aws-amplify'
 import { createUser, updateUser } from '~/graphql/mutations'
 
 export const userData = () => {
-  const createdUser = async (form) => {
+  const createdUser = async (form: {
+    userId: string
+    username: string
+    useremail: string
+    img: string
+  }) => {
     try {
       await API.graphql({
         query: createUser,
@@ -20,7 +25,7 @@ export const userData = () => {
     }
   }
 
-  const updateName = async (name) => {
+  const updateName = async (name: string): Promise<void> => {
     try {
       await API.graphql({
         query: updateUser,

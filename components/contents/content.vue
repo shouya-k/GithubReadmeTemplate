@@ -21,7 +21,7 @@
                     >Update</v-list-item-title
                   >
                 </v-list-item>
-                <v-dialog v-model="dialog.update" max-width="500px">
+                <v-dialog v-model="editDialog" max-width="500px">
                   <v-card>
                     <v-card-title class="headline pt-5"
                       >投稿の編集</v-card-title
@@ -31,7 +31,7 @@
                     >
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn text @click.stop="dialog.update = false"
+                      <v-btn text @click.stop="editDialog = false"
                         >キャンセル</v-btn
                       >
                     </v-card-actions>
@@ -164,11 +164,12 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, reactive } from '@nuxtjs/composition-api'
-import { API, Auth } from 'aws-amplify'
-import { searchReadmes, getReadme } from '../../graphql/queries'
-import { deleteReadme } from '../../graphql/mutations'
+import { ref, defineComponent } from '@nuxtjs/composition-api'
+import { API } from 'aws-amplify'
+import { searchReadmes } from '../../graphql/queries'
 import EditModal from '~/components/parts/EditContent.vue'
+import { useDialog } from '~/conpositions/useDialog'
+import { useEditModal } from '~/conpositions/useEditModal'
 export default defineComponent({
   components: {
     EditModal,
@@ -199,71 +200,14 @@ export default defineComponent({
       return `<img src="${img}" alt="attach:cat" title="attach:cat" width="800">`
     }
 
-    const getEditReadme = async (id: string) => {
-      const getdata: any = await API.graphql({
-        query: getReadme,
-        variables: {
-          id,
-        },
-      })
-      editReadme.value = getdata.data.getReadme
-    }
+    const { dialog, showDeleteDialog, deleteReadmes } = useDialog()
 
-    const editReadme = ref({})
-    const showEditModal = async (readme: {
-      user: { uid: string }
-      id: string
-      editModal: boolean
-    }) => {
-      const user = await Auth.currentAuthenticatedUser()
-      if (readme.user.uid === user.attributes.sub) {
-        getEditReadme(readme.id)
-        readme.editModal = true
-        dialog.update = false
-      } else {
-        dialog.update = true
-      }
-    }
-    const hiddenEditModal = (readme: { editModal: boolean }) => {
-      readme.editModal = false
-      getReadmes()
-    }
-
-    const dialog = reactive({
-      update: false,
-      delete: false,
-      message: '',
-      deleteBtn: false,
-    })
-
-    const showDeleteDialog = async (uid: String) => {
-      const user = await Auth.currentAuthenticatedUser()
-      dialog.delete = true
-      if (uid === user.attributes.sub) {
-        dialog.message = '本当にこの投稿を削除しますか？'
-        dialog.deleteBtn = true
-      } else {
-        dialog.message = '投稿者しか投稿を削除する事は出来ません。'
-        dialog.deleteBtn = false
-      }
-    }
-
-    const deleteReadmes = async (readme: { id: string }) => {
-      try {
-        await API.graphql({
-          query: deleteReadme,
-          variables: {
-            input: {
-              id: readme.id,
-            },
-          },
-        })
-        getReadmes()
-        location.reload()
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    const {
+      editReadme,
+      editDialog,
+      showEditModal,
+      hiddenEditModal,
+    } = useEditModal()
 
     return {
       readmes,
@@ -271,11 +215,12 @@ export default defineComponent({
       hiddenModal,
       image,
       deleteReadmes,
-      editReadme,
-      showEditModal,
-      hiddenEditModal,
       dialog,
       showDeleteDialog,
+      editReadme,
+      editDialog,
+      showEditModal,
+      hiddenEditModal,
     }
   },
 })

@@ -78,130 +78,28 @@
 </template>
 
 <script lang="ts">
-import { Auth, API } from 'aws-amplify'
-import { defineComponent, reactive, ref, toRefs } from '@nuxtjs/composition-api'
-import { updateUser } from '~/graphql/mutations'
-import { searchUsers } from '~/graphql/queries'
+import { defineComponent, ref, toRefs } from '@nuxtjs/composition-api'
 import EmailConfirm from '~/components/parts/EmailConfirm.vue'
+import { useUpdateUser } from '~/conpositions/useUpdateUser'
 export default defineComponent({
   components: {
     EmailConfirm,
   },
   setup() {
-    const form = reactive({
-      id: '',
-      username: '',
-      email: '',
-      img: '',
-      oldPassword: '',
-      newPassword: '',
-      confirm: false,
-    })
-
     const showOldPassword = ref(false)
     const showNewPassword = ref(false)
 
-    const changePassword = async (): Promise<void> => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        await Auth.changePassword(user, form.oldPassword, form.newPassword)
-        alert('パスワードを変更しました。')
-        location.reload()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const getUser = async (): Promise<void> => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        form.username = user.attributes.nickname
-        form.email = user.attributes.email
-        const data: any = await API.graphql({
-          query: searchUsers,
-          variables: {
-            filter: {
-              uid: {
-                match: user.attributes.sub,
-              },
-            },
-          },
-        })
-        form.id = data.data.searchUsers.items[0].id
-        form.img = data.data.searchUsers.items[0].img
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    const {
+      form,
+      getUser,
+      updateName,
+      updateEmail,
+      changePassword,
+      uploadImage,
+      onImageUploaded,
+    } = useUpdateUser()
 
     getUser()
-
-    const updateName = async (): Promise<void> => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        await Auth.updateUserAttributes(user, {
-          nickname: form.username,
-        })
-        await API.graphql({
-          query: updateUser,
-          variables: {
-            input: {
-              id: form.id,
-              name: form.username,
-            },
-          },
-        })
-        location.reload()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const updateEmail = async (): Promise<void> => {
-      try {
-        const user = await Auth.currentAuthenticatedUser()
-        await Auth.updateUserAttributes(user, {
-          email: form.email,
-        })
-        form.confirm = true
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const uploadImage = ref()
-
-    const onImageUploaded = (e: any): void => {
-      const img = e.target.files[0]
-      createImage(img)
-    }
-
-    const createImage = (image: any): void => {
-      const reader = new FileReader()
-      reader.readAsDataURL(image)
-      reader.onload = () => {
-        uploadImage.value = reader.result
-
-        updateImage()
-      }
-    }
-
-    const updateImage = async (): Promise<void> => {
-      try {
-        await API.graphql({
-          query: updateUser,
-          variables: {
-            input: {
-              id: form.id,
-              img: uploadImage.value,
-            },
-          },
-        })
-        getUser()
-      } catch (error) {
-        console.log(error)
-      }
-    }
 
     return {
       ...toRefs(form),
